@@ -1,0 +1,73 @@
+$fgray: #9e9e9e;
+// 底边颜色
+$border: #ececec;
+// 主题颜色 橙
+$theme: #f6b13f;
+// 浅橙色背景色
+$themeS: #fbf1da;
+// 辅助色 蓝
+$themeB: #4e8ee6;
+// 默认文字黑色
+$fblack: #535353;
+// placeholder颜色
+$placeholder: #e6e6e6;
+$themeEx: #3987ee;
+// 测评主题色
+$themeAssessment: #987de6;
+
+
+.fgray {
+	color: $fgray;
+}
+.fblack {
+	color: $fblack;
+}
+.fwhite {
+	color: white;
+}
+.ftheme {
+	color: $theme;
+}
+.fthemeB{
+    color: $themeB;
+}
+.forange {
+	color: #FE720C;
+}
+.fblue {
+	color: #3987EE;
+}
+.line-bottom {
+	border-bottom: 1px solid $border;
+}
+.bg-theme-s {
+	background: $themeS;
+}
+// 重置placeholder的值
+input,
+textarea {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: $placeholder;
+	}
+	&::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+	   color: $placeholder;
+	   opacity:  1;
+	}
+	&::-moz-placeholder { /* Mozilla Firefox 19+ */
+	   color: $placeholder;
+	   opacity:  1;
+	}
+	&::-ms-input-placeholder { /* Internet Explorer 10-11 */
+	   color: $placeholder;
+	}
+}
+
+/* 白背景 */
+.bg-white {
+	background: white;
+}
+
+/* 灰背景（透明） */
+.bg-gray-transparent {
+    background: rgba(86,86,86,0.8);
+}

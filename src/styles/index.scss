@@ -1,0 +1,67 @@
+@import './size.scss';
+@import './mixin.scss';
+@import './color.scss';
+
+
+// 服务按钮 大的蓝色按钮
+.service-btn-ok {
+	width: 90%;
+	color: white;
+	height: 1.1rem;
+	background: $themeB url('https://imageplus.miaohealth.net/upload/cms/image/0ebb6082-624b-4330-a799-be638eb15abb.png');
+	@include border-radius(rem(14));
+	background-size: 1px 1.1rem;
+	box-shadow: 0 0.1rem 0.2rem #c2d8f6;
+	display: inline-block;
+}
+// 大的白色按钮
+.service-btn-cancel {
+	width: 90%;
+	height: 1.1rem;
+	background: white;
+	@include border-radius(rem(14));
+	background-size: 1px 1.1rem;
+	box-shadow: 0 0.1rem 0.2rem #e9eff9;
+	display: inline-block;
+}
+
+// 不可点击的大按钮
+.service-btn-disable {
+	width: 90%;
+	height: 1.1rem;
+	background: #bdbdbd url('https://imageplus.miaohealth.net/upload/cms/image/0ebb6082-624b-4330-a799-be638eb15abb.png');
+	@include border-radius(rem(14));
+	background-size: 1px 1.1rem;
+	box-shadow: 0 0.1rem 0.2rem #e9eff9;
+	display: inline-block;
+}
+
+// 设置轮播图样式
+.van-swipe-item {
+    text-align: center;
+}
+// 底部按钮(M-health)
+.m-foot-btn{
+  position: fixed;
+  width: 100%;
+  padding: rem(20) rem(30);
+  left: 0;
+  bottom: 0;
+  background: #fff;
+  box-sizing: border-box;
+}
+.m-foot-btn div{
+  background: $themeEx;
+  height: rem(88);
+  line-height: rem(88);
+  border-radius: rem(10);
+  font-size: rem(30);
+  color: #fff;
+  text-align: center;
+}
+.m-foot-btn-disabled{
+  opacity: .4;
+}
+.van-popup--bottom.van-popup--round {
+  border-radius: 0;
+}
