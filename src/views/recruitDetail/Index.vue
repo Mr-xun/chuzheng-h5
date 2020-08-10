@@ -50,9 +50,6 @@
                 <img src="../../assets/images/recruit-detail.png" alt />
             </div>
         </div>
-        <div class="contact-btn">
-            <span>联系函</span>
-        </div>
     </div>
 </template>
 <script>
@@ -93,7 +90,6 @@ $labelOrangeColor: rgba(238,189,12,1);
     height: 100%;
     width: 100%;
     overflow: auto;
-    padding-bottom: 40px;
     .company-info {
         height: 76px;
         padding: 15px 16px 0;
