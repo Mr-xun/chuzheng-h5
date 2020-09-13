@@ -1,15 +1,25 @@
 import axios from 'axios';
 import { Toast } from 'vant';
-let devBaseUrl = 'http://192.168.13.241:3001'
-let proBaseUrl = 'http://49.233.16.84:3001'
+let devBaseUrl = "/api";
+let proBaseUrl = "http://www.chuzheng.online";
 console.log("node-env:"+process.env.NODE_ENV)
 const instance = axios.create({
     withCredentials: true,
     baseURL: process.env.NODE_ENV == 'production' ? proBaseUrl : devBaseUrl,
     timeout: 10000,
     headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-    },
+        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+    },transformRequest: [
+        function(data) {
+          // 请求参数的格式
+          let newData = "";
+          for (let k in data) {
+            newData +=
+              encodeURIComponent(k) + "=" + encodeURIComponent(data[k]) + "&";
+          }
+          return newData;
+        }
+      ]
 });
 instance.interceptors.request.use((config) => {
     return config

@@ -8,7 +8,8 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    redirect: "/recruit-detail",
   },
   {
     path: '/about',
@@ -23,7 +24,7 @@ Vue.use(VueRouter)
     name: 'RecruitDetail',
     component: () => import(/* webpackChunkName: "Detail" */ '../views/recruitDetail/Index.vue'),
     meta:{
-      title:'急招专业分工'
+      title:'招工详情'
     }
   }
 ]

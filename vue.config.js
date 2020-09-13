@@ -25,6 +25,15 @@ module.exports = {
 		overlay: {
 			warnings: false,
 			errors: false
+		},
+		proxy: {
+			"/api": {
+			  target: "http://www.chuzheng.online",
+			  changeOrigin: true,
+			  pathRewrite: {
+				"^/api": ""
+			  }
+			}
 		}
 	},
 	lintOnSave: false

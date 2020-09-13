@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import VueAMap from 'vue-amap';
 import FastClick from 'fastclick';
+import api from "@/api";
+
 import 'amfe-flexible/index.js'
 import "normalize.css";
 import '@/styles/global.css';
@@ -18,6 +20,8 @@ VueAMap.initAMapApiLoader({
   // 默认高德 sdk 版本为 1.4.4
   v: '1.4.4'
 });
+Vue.prototype.$api = api;
+
 new Vue({
   router,
   store,
