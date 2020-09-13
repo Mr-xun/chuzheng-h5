@@ -230,6 +230,8 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
 		.adress-map {
 			width: 343px;
 			height: 160px;
+            border-radius: 5px;
+            overflow: hidden;
 		}
 	}
 	.drawing-box,
