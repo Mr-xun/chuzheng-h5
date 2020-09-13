@@ -3,7 +3,20 @@
         <router-view />
     </div>
 </template>
-
+<script>
+export default {
+    mounted() {
+        try {
+            document.body.removeChild(document.getElementById('appLoading'))
+            setTimeout(function () {
+                document.getElementById('app').style.display = "block";
+            }, 1000)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+}
+</script>
 <style lang="scss">
 #app {
     height: 100%;
