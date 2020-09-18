@@ -10,10 +10,6 @@
 					<van-icon class="label-icon" name="passed" />
 					<span>已认证</span>
 				</li>
-				<li class="label-item label-orange-bg flex-all-center">
-					<van-icon class="label-icon" name="plus" />
-					<span>关注</span>
-				</li>
 			</ul>
 		</div>
 		<div class="recruit-subject bg-white mb10 flex-between-center">
@@ -26,10 +22,9 @@
 		</div>
 		<div class="project-name bg-white mb10 flex-between">
 			<h6 class="pro-title">项目名称</h6>
-			<p class="pro-name" v-if=" detailInfo.titleName">
+			<p class="pro-name" v-if="detailInfo.titleName">
 				<span class="urgent" v-if="detailInfo.isUrgent">急招</span>
-				<span v-else>招</span>
-				{{ detailInfo.titleName }}
+				<span v-else>招{{ detailInfo.titleName }}</span>
 			</p>
 		</div>
 		<div class="project-domain bg-white mb10">
@@ -39,7 +34,7 @@
 		<div class="project-address bg-white mb10">
 			<h6 class="adress-title">项目地址</h6>
 			<div class="adress-map">
-				<el-amap class="amap-box" vid="amap-vue" :center="mapCenter" :zoom="15">
+				<el-amap class="amap-box" vid="amap-vue" :center="mapCenter" :zoom="13">
 					<el-amap-marker v-for="(marker, index) in markers" :position="marker" :key="index"></el-amap-marker>
 				</el-amap>
 			</div>
@@ -63,6 +58,8 @@
 	</div>
 </template>
 <script>
+import axios from "axios";
+
 export default {
 	name: "RecruitDetail",
 	data() {
@@ -92,6 +89,28 @@ export default {
 				.catch((err) => {
 					console.log(err);
 				});
+		},
+		setPosition() {
+			if (this.detailInfo.locationCityName) {
+				axios
+					.get(
+						`https://restapi.amap.com/v3/geocode/geo?address=${this.detailInfo.locationCityName}&key=f012e701b8e4079310a99bd7d4ffbeb2`
+					)
+					.then((res) => {
+						let { status } = res.data;
+						if (status == 1) {
+							let rectangle = res.data.geocodes[0].location;
+							let lnglat = rectangle.split(",");
+							let lng = lnglat[0];
+							let lat = lnglat[1];
+							this.mapCenter = [lng, lat];
+							this.markers = [[lng, lat]];
+						}
+					})
+					.catch((error) => {
+						this.$message.error(error);
+					});
+			}
 		},
 	},
 };
@@ -230,8 +249,8 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
 		.adress-map {
 			width: 343px;
 			height: 160px;
-            border-radius: 5px;
-            overflow: hidden;
+			border-radius: 5px;
+			overflow: hidden;
 		}
 	}
 	.drawing-box,
@@ -246,6 +265,7 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
 				width: 320px;
 				height: 180px;
 				margin: auto;
+				border-radius: 8px;
 			}
 		}
 	}
