@@ -24,7 +24,8 @@
 			<h6 class="pro-title">项目名称</h6>
 			<p class="pro-name" v-if="detailInfo.titleName">
 				<span class="urgent" v-if="detailInfo.isUrgent">急招</span>
-				<span v-else>招{{ detailInfo.titleName }}</span>
+				<span v-else>招</span>
+				{{ detailInfo.titleName }}
 			</p>
 		</div>
 		<div class="project-domain bg-white mb10">
@@ -91,26 +92,26 @@ export default {
 				});
 		},
 		setPosition() {
-			if (this.detailInfo.locationCityName) {
-				axios
-					.get(
-						`https://restapi.amap.com/v3/geocode/geo?address=${this.detailInfo.locationCityName}&key=d27c8c33e47aea8fa848fb2d2b1d365c`
-					)
-					.then((res) => {
-						let { status } = res.data;
-						if (status == 1) {
-							let rectangle = res.data.geocodes[0].location;
-							let lnglat = rectangle.split(",");
-							let lng = lnglat[0];
-							let lat = lnglat[1];
-							this.mapCenter = [lng, lat];
-							this.markers = [[lng, lat]];
-						}
-					})
-					.catch((error) => {
-						this.$message.error(error);
-					});
-			}
+			let position =
+				this.detailInfo.selectAddress || this.detailInfo.detailAddress;
+			axios
+				.get(
+					`https://restapi.amap.com/v3/geocode/geo?address=${position}&key=d27c8c33e47aea8fa848fb2d2b1d365c`
+				)
+				.then((res) => {
+					let { status } = res.data;
+					if (status == 1) {
+						let rectangle = res.data.geocodes[0].location;
+						let lnglat = rectangle.split(",");
+						let lng = lnglat[0];
+						let lat = lnglat[1];
+						this.mapCenter = [lng, lat];
+						this.markers = [[lng, lat]];
+					}
+				})
+				.catch((error) => {
+					this.$message.error(error);
+				});
 		},
 	},
 };
