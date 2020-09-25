@@ -8,26 +8,48 @@
                 ></em>
             </h5>
             <ul class="label-box flex-cross-center">
-                <li class="label-item label-red-bg flex-all-center">
-                    <van-icon class="label-icon" name="passed" />
-                    <span>已认证</span>
+                <li class="label-item flex-all-center">
+                    <!-- <van-icon class="label-icon" name="passed" />
+                    <span>已认证</span> -->
+                    <img
+                        class="verify-label"
+                        src="../../assets/images/verified.png"
+                        alt=""
+                    />
                 </li>
             </ul>
         </div>
         <div class="recruit-subject bg-white mb10 flex-between-center">
             <span class="recruit-title">发单编号</span>
-            <span class="recruit-name">{{ detailInfo.publishOrderNumber }}</span>
+            <span class="recruit-name">{{
+                detailInfo.publishOrderNumber
+            }}</span>
         </div>
         <div class="recruit-subject bg-white mb10 flex-between-center">
             <span class="recruit-title">招工主体</span>
             <span class="recruit-name">{{ detailInfo.publishName }}</span>
         </div>
         <div class="project-name bg-white mb10 flex-between">
-            <h6 class="pro-title">项目名称</h6>
+            <h6 class="pro-title flex-between-center">
+                项目名称
+                <span
+                    class="excess-time time"
+                    v-if="
+                        detailInfo.isUrgent &&
+                        !detailInfo.isStop &&
+                        detailInfo.timerDiff > 0
+                    "
+                >
+                    {{ timeChange(detailInfo.timerDiff) }}
+                </span>
+            </h6>
             <p class="pro-name" v-if="detailInfo.titleName">
-                <span class="urgent" v-if="detailInfo.isUrgent">急招</span>
-                <span v-else>招</span>
-                {{ detailInfo.titleName }}
+                <span
+                    class="urgent"
+                    v-if="detailInfo.isUrgent && detailInfo.timerDiff > 0"
+                    >急招</span
+                >
+                <span v-else>招</span>{{ detailInfo.titleName }}
             </p>
         </div>
         <div class="project-domain bg-white mb10">
@@ -37,22 +59,48 @@
         <div class="project-address bg-white mb10">
             <h6 class="adress-title">项目地址</h6>
             <div class="adress-map">
-                <el-amap class="amap-box" vid="amap-vue" :center="mapCenter" :zoom="13">
+                <el-amap
+                    class="amap-box"
+                    vid="amap-vue"
+                    :center="mapCenter"
+                    :zoom="13"
+                >
                     <el-amap-marker
                         v-for="(marker, index) in markers"
                         :position="marker"
                         :key="index"
                         content="<img src='http://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png' style='width:15px;height:25px;'></img>"
-                        :offset="[-10,-8]"
-                    ></el-amap-marker>
+                        :offset="[0, -8]"
+                    >
+                        <div class="marker-content">
+                            <div class="address-name f12" @click="toGD">
+                                {{ markerObj.addressName }}
+                            </div>
+                            <img
+                                class="address-coord"
+                                src="../../assets/images/marker-coord.png"
+                                alt=""
+                            />
+                        </div>
+                    </el-amap-marker>
                 </el-amap>
             </div>
         </div>
-        <div class="drawing-box bg-white mb10" v-if="detailInfo.designStatus != 0">
+        <div
+            class="drawing-box bg-white mb10"
+            v-if="detailInfo.designStatus != 0"
+        >
             <h6 class="drawing-title">图纸</h6>
-            <p v-if="detailInfo.designStatus == 1">上传的图纸后台待处理，处理后可查看对应图</p>
+            <p v-if="detailInfo.designStatus == 1">
+                上传的图纸后台待处理，处理后可查看对应图
+            </p>
             <div class="drawing-imgs" v-if="detailInfo.designStatus == 2">
-                <img :src="item" alt v-for="(item, index) in detailInfo.designUrls" :key="index" />
+                <img
+                    :src="item"
+                    alt
+                    v-for="(item, index) in detailInfo.designUrls"
+                    :key="index"
+                />
             </div>
         </div>
         <div
@@ -61,7 +109,12 @@
         >
             <h6 class="drawing-title">图片</h6>
             <div class="drawing-imgs">
-                <img :src="item" alt v-for="(item, index) in detailInfo.pictures" :key="index" />
+                <img
+                    :src="item"
+                    alt
+                    v-for="(item, index) in detailInfo.pictures"
+                    :key="index"
+                />
             </div>
         </div>
     </div>
@@ -74,14 +127,77 @@ export default {
     data() {
         return {
             detailInfo: {},
-            markers: [[116.398055, 39.907046]],
+            markerObj: {
+                addressName: "",
+                position: [],
+            },
             mapCenter: [116.398055, 39.907046],
+            markers: [[116.398055, 39.907046]],
+            timer: null,
+            linkUrl: "",
         };
     },
     mounted() {
         this.getDetail();
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
+        this.beginTimer();
+    },
+    destroyed() {
+        clearInterval(this.timer);
     },
     methods: {
+        beginTimer() {
+            console.log(this.detailInfo.timerDiff, 888);
+            //这个计时器是每秒减去数组中指定字段的时间
+            this.timer = setInterval(() => {
+                if (this.detailInfo.timerDiff > 0) {
+                    this.$set(
+                        this.detailInfo,
+                        "timerDiff",
+                        this.detailInfo.timerDiff - 1
+                    );
+                }
+            }, 1000);
+        },
+        timeChange(timerDiff) {
+            if (timerDiff < 0) {
+                return "00:00:00";
+            } else {
+                //求天时分秒 leftDate是毫秒
+                let hour = parseInt(timerDiff / (60 * 60));
+                let minu = parseInt((timerDiff / 60) % 60);
+                let sec = parseInt(timerDiff % 60);
+                let showHour = hour < 10 ? "0" + hour : hour;
+                let showMinu = minu < 10 ? "0" + minu : minu;
+                let showSec = sec < 10 ? "0" + sec : sec;
+                return `${showHour}:${showMinu}:${showSec}`;
+            }
+        },
+        is_weixin() {
+            var ua = window.navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        toGD() {
+            const ua = navigator.userAgent;
+            const isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+            if (this.is_weixin()) {
+                window.location.href = this.linkUrl;
+            } else if (isiOS) {
+                let url = `iosamap://navi?sourceApplication=amap&poiname=${this.markerObj.addressName}&poiid=BGVIS&lat=${this.mapCenter[1]}&lon=${this.mapCenter[0]}&dev=1&style=2`;
+                window.open(url, "_blank");
+                return;
+            } else {
+                let url = `androidamap://navi?sourceApplication=amap&poiname=${this.markerObj.addressName}&lat=${this.mapCenter[1]}&lon=${this.mapCenter[0]}&dev=1&style=2`;
+                window.open(url, "_blank");
+                return;
+            }
+        },
         getDetail() {
             let { publishInfoId, publishId } = this.$route.query;
             let params = {
@@ -93,11 +209,20 @@ export default {
                 .then((res) => {
                     let { data } = res.data;
                     this.detailInfo = data.publish;
+                    let curTimer = eval("new Date()").getTime();
+                    let expirationTimer = new Date(
+                        this.detailInfo.expirationDate.replace(/-/g, "/")
+                    ).getTime();
+                    let timerDiff = (expirationTimer - curTimer) / 1000;
+                    this.$set(this.detailInfo, "timerDiff", timerDiff);
                     this.setPosition();
                 })
                 .catch((err) => {
                     console.log(err);
                 });
+        },
+        handler(item) {
+            console.log(item, "click");
         },
         setPosition() {
             let position =
@@ -114,7 +239,12 @@ export default {
                         let lng = lnglat[0];
                         let lat = lnglat[1];
                         this.mapCenter = [lng, lat];
+                        this.markerObj.position = [lng, lat];
                         this.markers = [[lng, lat]];
+                        this.markerObj.addressName =
+                            res.data.geocodes[0].formatted_address;
+                        // this.marker.template = `<button @click="handler(${res.data.geocodes[0]})">${res.data.geocodes[0].formatted_address}</button>`;
+                        this.linkUrl = `https://uri.amap.com/marker?position=${res.data.geocodes[0].location}&name=${res.data.geocodes[0].formatted_address}`;
                     }
                 })
                 .catch((error) => {
@@ -135,6 +265,22 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
     font-weight: 500;
     line-height: 16px;
     margin-bottom: 7px;
+}
+.marker-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .address-name {
+        text-align: center;
+        width: 180px;
+        padding: 10px 20px 20px;
+        line-height: 18px;
+        background: url("../../assets/images/marker-adress.png");
+        background-size: 100% 100%;
+    }
+    b {
+        color: red;
+    }
 }
 .label-blue-bg {
     background: rgba(225, 238, 254, 1);
@@ -172,7 +318,6 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
                     display: inline-block;
                     width: 10px;
                     height: 10px;
-                    background: rgba(150, 200, 119, 1);
                     border-radius: 5px;
                     margin-left: 3px;
                 }
@@ -194,7 +339,11 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
                 margin-right: 10px;
                 text-align: center;
                 justify-content: space-around;
-                padding: 4px 8px;
+                padding: 4px 0;
+                .verify-label {
+                    width: 60px;
+                    height: 20px;
+                }
                 .label-icon {
                     font-size: 14px;
                 }
@@ -223,6 +372,9 @@ $labelOrangeColor: rgba(238, 189, 12, 1);
         flex-direction: column;
         .pro-title {
             @include title-name;
+            .excess-time {
+                color: rgba(132, 132, 136, 1);
+            }
         }
         .pro-name {
             line-height: 16px;

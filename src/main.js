@@ -11,9 +11,14 @@ import "normalize.css";
 import '@/styles/global.css';
 import '@/styles/index.scss';
 import './plugins/vant';
+import VConsole from 'vconsole';
 Vue.config.productionTip = false
 FastClick.attach(document.body);
+if (process.env.NODE_ENV !== 'production') {
+  new VConsole();
+}
 Vue.use(VueAMap);
+
 VueAMap.initAMapApiLoader({
   key: 'd27c8c33e47aea8fa848fb2d2b1d365c',
   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
