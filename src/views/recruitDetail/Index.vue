@@ -73,7 +73,7 @@
                         :offset="[0, -8]"
                     >
                         <div class="marker-content">
-                            <div class="address-name f12" @click="toGD">
+                            <div class="address-name f12" v-if="markerObj.addressName">
                                 {{ markerObj.addressName }}
                             </div>
                             <img
