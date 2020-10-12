@@ -73,7 +73,11 @@
                         :offset="[0, -8]"
                     >
                         <div class="marker-content">
-                            <div class="address-name f12" v-if="markerObj.addressName">
+                            <div
+                                class="address-name f12"
+                                @click="toGD"
+                                v-if="markerObj.addressName"
+                            >
                                 {{ markerObj.addressName }}
                             </div>
                             <img
@@ -149,7 +153,6 @@ export default {
     },
     methods: {
         beginTimer() {
-            console.log(this.detailInfo.timerDiff, 888);
             //这个计时器是每秒减去数组中指定字段的时间
             this.timer = setInterval(() => {
                 if (this.detailInfo.timerDiff > 0) {
@@ -183,18 +186,32 @@ export default {
                 return false;
             }
         },
+        android(long, lat) {
+            var longitude = this.mapCenter[0];
+            var latitude = this.mapCenter[1];
+        },
         toGD() {
             const ua = navigator.userAgent;
             const isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-            if (this.is_weixin()) {
+            const isAndroid =
+                ua.indexOf("Android") > -1 || ua.indexOf("Linux") > -1;
+            if (this.is_weixin()) { //微信
                 window.location.href = this.linkUrl;
-            } else if (isiOS) {
+                console.log('微信环境')
+            } else if (isiOS) { //IOS
                 let url = `iosamap://navi?sourceApplication=amap&poiname=${this.markerObj.addressName}&poiid=BGVIS&lat=${this.mapCenter[1]}&lon=${this.mapCenter[0]}&dev=1&style=2`;
                 window.open(url, "_blank");
+                console.log('IOS')
+
                 return;
-            } else {
+            } else if (isAndroid) { //Android 
                 let url = `androidamap://navi?sourceApplication=amap&poiname=${this.markerObj.addressName}&lat=${this.mapCenter[1]}&lon=${this.mapCenter[0]}&dev=1&style=2`;
                 window.open(url, "_blank");
+                console.log('Android')
+                return;
+            } else {
+                this.android(); //原生
+                console.log('原生')
                 return;
             }
         },
